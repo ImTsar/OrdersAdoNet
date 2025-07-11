@@ -13,39 +13,6 @@ namespace OrdersAdoNet.Services
             _connectionString = connectionString;
         }
 
-        public async Task<bool> OrderExistsAsync(int orderId)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                using (var command = new SqlCommand(
-                    "SELECT COUNT(*) FROM Orders WHERE ord_id = @OrderId",
-                    connection))
-                {
-                    command.Parameters.AddWithValue("@OrderId", orderId);
-
-                    return (int)await command.ExecuteScalarAsync() > 0;
-                }
-            }
-        }
-
-        public async Task<bool> AnalysisExistsAsync(int analysisId)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-
-                using (var command = new SqlCommand(
-                    "SELECT COUNT(*) FROM Analysis WHERE an_id = @AnalysisId",
-                    connection))
-                {
-                    command.Parameters.AddWithValue("@AnalysisId", analysisId);
-
-                    return (int)await command.ExecuteScalarAsync() > 0;
-                }
-            }
-        }
-
         public async Task<IEnumerable<OrderDto>> GetLastYearWithDataReaderAsync()
         {
             var orders = new List<OrderDto>();
@@ -180,6 +147,39 @@ namespace OrdersAdoNet.Services
                     connection))
                 {
                     command.Parameters.AddWithValue("@OrderId", orderId);
+                }
+            }
+        }
+
+        private async Task<bool> OrderExistsAsync(int orderId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                using (var command = new SqlCommand(
+                    "SELECT COUNT(*) FROM Orders WHERE ord_id = @OrderId",
+                    connection))
+                {
+                    command.Parameters.AddWithValue("@OrderId", orderId);
+
+                    return (int)await command.ExecuteScalarAsync() > 0;
+                }
+            }
+        }
+
+        private async Task<bool> AnalysisExistsAsync(int analysisId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new SqlCommand(
+                    "SELECT COUNT(*) FROM Analysis WHERE an_id = @AnalysisId",
+                    connection))
+                {
+                    command.Parameters.AddWithValue("@AnalysisId", analysisId);
+
+                    return (int)await command.ExecuteScalarAsync() > 0;
                 }
             }
         }
